@@ -1,0 +1,29 @@
+name: Installa da ZIP
+on:
+  push:
+    paths: ['SignalBridge.zip']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Estrai lo ZIP con le cartelle giuste
+        run: |
+          set -e
+          mkdir -p /tmp/x && unzip -q SignalBridge.zip -d /tmp/x
+          git ls-files | grep -v '^\.github/' | xargs -r -d '\n' git rm -q
+          rm -rf /tmp/x/signalbridge/.github
+          cp -a /tmp/x/signalbridge/. .
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Installa SignalBridge dallo ZIP"
+          git push
+      - name: Pubblica app
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
