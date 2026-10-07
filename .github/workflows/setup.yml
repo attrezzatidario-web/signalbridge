@@ -1,27 +1,70 @@
-name: Installa da ZIP
+name: Riorganizza cartelle
 on:
   push:
-    paths: ['SignalBridge.zip']
+    paths: ['.github/workflows/setup.yml']
   workflow_dispatch:
 permissions:
   contents: write
   actions: write
 jobs:
-  unzip:
+  fix:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Estrai lo ZIP con le cartelle giuste
+      - name: Sposta i file nelle cartelle giuste
         run: |
           set -e
-          mkdir -p /tmp/x && unzip -q SignalBridge.zip -d /tmp/x
-          git ls-files | grep -v '^\.github/' | xargs -r -d '\n' git rm -q
-          rm -rf /tmp/x/signalbridge/.github
-          cp -a /tmp/x/signalbridge/. .
+          mv_to() { if [ -f "$1" ]; then mkdir -p "$(dirname "$2")"; git mv -f "$1" "$2"; fi; }
+          mv_to 'download' '.gitignore'
+          mv_to 'index.html' 'app/index.html'
+          mv_to 'package-lock.json' 'app/package-lock.json'
+          mv_to 'package.json' 'app/package.json'
+          mv_to 'postcss.config.js' 'app/postcss.config.js'
+          mv_to 'apple-touch-icon.png' 'app/public/apple-touch-icon.png'
+          mv_to 'icon-192.png' 'app/public/icon-192.png'
+          mv_to 'icon-512.png' 'app/public/icon-512.png'
+          mv_to 'icon.svg' 'app/public/icon.svg'
+          mv_to 'App.jsx' 'app/src/App.jsx'
+          mv_to 'ui.jsx' 'app/src/components/ui.jsx'
+          mv_to 'index.css' 'app/src/index.css'
+          mv_to 'fmt.js' 'app/src/lib/fmt.js'
+          mv_to 'live.js' 'app/src/lib/live.js'
+          mv_to 'supa.js' 'app/src/lib/supa.js'
+          mv_to 'main.jsx' 'app/src/main.jsx'
+          mv_to 'Groups.jsx' 'app/src/pages/Groups.jsx'
+          mv_to 'History.jsx' 'app/src/pages/History.jsx'
+          mv_to 'Home.jsx' 'app/src/pages/Home.jsx'
+          mv_to 'Login.jsx' 'app/src/pages/Login.jsx'
+          mv_to 'Settings.jsx' 'app/src/pages/Settings.jsx'
+          mv_to 'Setup.jsx' 'app/src/pages/Setup.jsx'
+          mv_to 'Signals.jsx' 'app/src/pages/Signals.jsx'
+          mv_to 'tailwind.config.js' 'app/tailwind.config.js'
+          mv_to 'vite.config.js' 'app/vite.config.js'
+          mv_to 'env.example' 'engine/.env.example'
+          mv_to 'AGGIORNA.bat' 'engine/AGGIORNA.bat'
+          mv_to 'AVVIA.bat' 'engine/AVVIA.bat'
+          mv_to 'INSTALLA.bat' 'engine/INSTALLA.bat'
+          mv_to 'LOGIN_TELEGRAM.bat' 'engine/LOGIN_TELEGRAM.bat'
+          mv_to 'TEST_PARSER.bat' 'engine/TEST_PARSER.bat'
+          mv_to 'ai_parser.py' 'engine/ai_parser.py'
+          mv_to 'config.py' 'engine/config.py'
+          mv_to 'db.py' 'engine/db.py'
+          mv_to 'login_telegram.py' 'engine/login_telegram.py'
+          mv_to 'main.py' 'engine/main.py'
+          mv_to 'manager.py' 'engine/manager.py'
+          mv_to 'mt5_exec.py' 'engine/mt5_exec.py'
+          mv_to 'parser.py' 'engine/parser.py'
+          mv_to 'requirements.txt' 'engine/requirements.txt'
+          mv_to '__init__.py' 'engine/sim/__init__.py'
+          mv_to 'fake_mt5.py' 'engine/sim/fake_mt5.py'
+          mv_to 'telegram_listener.py' 'engine/telegram_listener.py'
+          mv_to 'test_parser.py' 'engine/tests/test_parser.py'
+          mv_to 'test_sim.py' 'engine/tests/test_sim.py'
+          mv_to 'schema.sql' 'supabase/schema.sql'
+          git rm -q --ignore-unmatch pages.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "Installa SignalBridge dallo ZIP"
+          git commit -m "Riorganizza cartelle"
           git push
       - name: Pubblica app
         env:
