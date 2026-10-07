@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { LogOut, FlaskConical } from 'lucide-react'
 import { useRow } from '../lib/live'
-import { sb, command } from '../lib/supa'
+import { command, logout } from '../lib/api'
 import { Toggle, Field, Row, Segmented } from '../components/ui'
 
 export default function Settings() {
@@ -46,8 +46,8 @@ export default function Settings() {
 
       <Tester />
 
-      <button onClick={() => sb().auth.signOut()} className="btn-ghost w-full"><LogOut size={16} />Esci</button>
-      <p className="text-center text-[11px] text-mute pb-4">SignalBridge 1.0</p>
+      <button onClick={async () => { await logout().catch(() => {}); location.reload() }} className="btn-ghost w-full"><LogOut size={16} />Esci</button>
+      <p className="text-center text-[11px] text-mute pb-4">SignalBridge 1.1</p>
     </div>
   )
 }
@@ -83,7 +83,7 @@ function Tester() {
   const [busy, setBusy] = useState(false)
   const run = async () => {
     setBusy(true); setRes(null)
-    try { const r = await command('parse_test', { text }, true); setRes(r.result) } catch (e) { setRes({ error: e.message }) }
+    try { const r = await command('parse_test', { text }); setRes(r.result) } catch (e) { setRes({ error: e.message }) }
     setBusy(false)
   }
   return (

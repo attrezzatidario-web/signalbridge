@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Power, X } from 'lucide-react'
 import { useRow, useTick } from '../lib/live'
-import { command } from '../lib/supa'
+import { command } from '../lib/api'
 import { money, num, ago, pnlClass } from '../lib/fmt'
 import { Dot, Toggle, Empty } from '../components/ui'
 
@@ -19,11 +19,11 @@ export default function Home() {
 
   const close = async (ticket) => {
     if (!confirm('Chiudere questa posizione?')) return
-    setBusy(ticket); try { await command('close_ticket', { ticket }, true) } catch (e) { alert(e.message) } setBusy(null)
+    setBusy(ticket); try { await command('close_ticket', { ticket }) } catch (e) { alert(e.message) } setBusy(null)
   }
   const closeAll = async () => {
     if (!confirm(`Chiudere TUTTE le ${pos.length} posizioni/ordini del bot?`)) return
-    setBusy('all'); try { await command('close_all', {}, true) } catch (e) { alert(e.message) } setBusy(null)
+    setBusy('all'); try { await command('close_all', {}) } catch (e) { alert(e.message) } setBusy(null)
   }
 
   return (

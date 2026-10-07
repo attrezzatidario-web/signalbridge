@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { RefreshCw, Search, ChevronRight } from 'lucide-react'
 import { useLiveTable } from '../lib/live'
-import { sb, command } from '../lib/supa'
+import { api, command } from '../lib/api'
 import { ago } from '../lib/fmt'
 import { Toggle, Sheet, Segmented, Field, Row, Empty } from '../components/ui'
 
@@ -18,8 +18,7 @@ export default function Groups() {
 
   const save = async (id, patch) => {
     setRows(r => r.map(c => (c.id === id ? { ...c, ...patch } : c)))
-    const { error } = await sb().from('channels').update({ ...patch, updated_at: new Date().toISOString() }).eq('id', id)
-    if (error) alert(error.message)
+    try { await api('PATCH', `/api/channels/${id}`, patch) } catch (e) { alert(e.message) }
   }
 
   const list = useMemo(() => {
@@ -33,7 +32,7 @@ export default function Groups() {
 
   const refresh = async () => {
     setBusy(true)
-    try { const r = await command('refresh_channels', {}, true); alert(`Lista aggiornata. Nuovi: ${r.result?.new ?? 0}`) } catch (e) { alert(e.message) }
+    try { const r = await command('refresh_channels', {}); alert(`Lista aggiornata. Nuovi: ${r.result?.new ?? 0}`) } catch (e) { alert(e.message) }
     setBusy(false)
   }
 
