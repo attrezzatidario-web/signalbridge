@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+body {
+  @apply bg-bg text-zinc-100 font-sans antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+input, select, textarea { @apply bg-bg border border-line rounded-lg px-3 py-2 text-sm outline-none w-full; }
+input:focus, select:focus, textarea:focus { @apply border-accent; }
+.card { @apply bg-card border border-line rounded-2xl; }
+.btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition active:scale-[.98] disabled:opacity-40; }
+.btn-primary { @apply btn bg-accent text-white; }
+.btn-ghost { @apply btn bg-line/60 text-zinc-200; }
+.btn-danger { @apply btn bg-down/15 text-down; }
+.label { @apply text-xs text-mute mb-1 block; }
+.num { font-variant-numeric: tabular-nums; }
+.safe-b { padding-bottom: max(env(safe-area-inset-bottom), 8px); }
+.safe-t { padding-top: env(safe-area-inset-top); }

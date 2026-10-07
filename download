@@ -1,0 +1,10 @@
+# segreti: MAI su GitHub
+.env
+*.session
+*.session-journal
+# generati
+engine/venv/
+engine/engine.log*
+__pycache__/
+app/node_modules/
+app/dist/
