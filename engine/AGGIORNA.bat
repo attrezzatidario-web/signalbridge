@@ -1,8 +1,8 @@
 @echo off
-cd /d %~dp0\..
-echo Scarico aggiornamenti da GitHub...
-git pull
-cd engine
+cd /d %~dp0
+echo Scarico l'ultima versione da GitHub...
+powershell -NoProfile -ExecutionPolicy Bypass -File aggiorna.ps1
+if errorlevel 1 (echo ERRORE durante il download & pause & exit /b 1)
 call venv\Scripts\activate.bat
 pip install -q -r requirements.txt
 echo.

@@ -1,5 +1,5 @@
 MetaTrader5>=5.0.45
 telethon>=1.36
-supabase>=2.4
+aiohttp>=3.9
 google-genai>=1.0
 python-dotenv>=1.0
