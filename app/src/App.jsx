@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Activity, Radio, Users, History as HistoryIcon, Settings as Cog } from 'lucide-react'
-import { sb, getConn } from './lib/supa'
-import Setup from './pages/Setup'
+import { isLogged, setUnauthorizedHandler } from './lib/api'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import Signals from './pages/Signals'
@@ -18,22 +17,17 @@ const TABS = [
 ]
 
 export default function App() {
-  const [conn, setConnState] = useState(getConn())
-  const [session, setSession] = useState(undefined)
+  const [logged, setLogged] = useState(undefined)
   const [tab, setTab] = useState(() => localStorage.getItem('sb_tab') || 'home')
 
   useEffect(() => {
-    if (!conn) return
-    sb().auth.getSession().then(({ data }) => setSession(data.session))
-    const { data } = sb().auth.onAuthStateChange((_e, s) => setSession(s))
-    return () => data.subscription.unsubscribe()
-  }, [conn])
-
+    setUnauthorizedHandler(() => setLogged(false))
+    isLogged().then(setLogged)
+  }, [])
   useEffect(() => { localStorage.setItem('sb_tab', tab) }, [tab])
 
-  if (!conn) return <Setup onDone={() => setConnState(getConn())} />
-  if (session === undefined) return null
-  if (!session) return <Login onReset={() => setConnState(null)} />
+  if (logged === undefined) return null
+  if (!logged) return <Login onDone={() => setLogged(true)} />
 
   const Page = (TABS.find(t => t[0] === tab) || TABS[0])[3]
 
