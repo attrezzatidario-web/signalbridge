@@ -1,10 +1,14 @@
-# segreti: MAI su GitHub
+# segreti e dati: MAI su GitHub
 .env
 *.session
 *.session-journal
-# generati
+engine/dati.db*
+# generati sulla VPS
 engine/venv/
 engine/engine.log*
+engine/caddy.exe
+engine/Caddyfile
+engine/caddy.log
 __pycache__/
 app/node_modules/
 app/dist/

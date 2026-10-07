@@ -1,33 +1,31 @@
 # SignalBridge — Telegram → MT5
 
 ```
-Gruppi Telegram ──► MOTORE (VPS Windows) ──► MetaTrader 5
-                         │  ▲
-                         ▼  │
-                      SUPABASE  ◄──►  APP (PC / telefono)
+Gruppi Telegram ──► VPS Windows: MOTORE + DATABASE + APP ──► MetaTrader 5
+                                     ▲
+                          https://TUO-NOME.duckdns.org  (PC / telefono, con password)
 ```
 
+Niente servizi esterni: tutto gira sulla VPS. GitHub conserva il codice e compila l'app.
+
 ## Cartelle
-- `supabase/schema.sql` — database (da incollare una volta in Supabase)
-- `.github/workflows/pages.yml` — pubblica da solo l'app su GitHub Pages a ogni modifica
+- `engine/` — motore Python + server web (va sulla VPS)
+- `engine/web/` — app compilata (la crea GitHub da sola)
 - `app/` — sorgente React dell'app
-- `engine/` — motore Python da copiare sulla VPS
+- `.github/workflows/pages.yml` — compila l'app a ogni modifica
 
-## Cosa fa il motore
-- Legge i gruppi Telegram con il tuo account e mostra nell'app TUTTI i tuoi gruppi/canali: attivi quelli da copiare.
-- Capisce i segnali con regole veloci; se il messaggio è strano chiede a Gemini.
-- Apre subito a mercato (o limit/stop se il segnale lo dice), una posizione per ogni TP.
-- Segue gli aggiornamenti: chiudi, chiudi metà/%, SL a pareggio, modifica SL/TP, annulla, messaggio modificato.
-- SL a pareggio automatico quando prende il TP1.
-- Sicurezze: solo conto DEMO (finché non sblocchi), max posizioni, stop perdita giornaliera, interruttore generale, "Chiudi tutto".
+## Cosa fa
+- Legge i tuoi gruppi Telegram; nell'app scegli quali copiare e con che rischio.
+- Capisce i segnali (regole + Gemini), apre a mercato o limit/stop, una posizione per TP.
+- Segue gli aggiornamenti: chiudi, chiudi metà/%, SL a pareggio, modifica SL/TP, annulla, messaggi modificati.
+- SL a pareggio automatico dopo TP1.
+- Sicurezze: solo DEMO finché non sblocchi, max posizioni, stop perdita giornaliera, interruttore generale, "Chiudi tutto".
+- App protetta da password, HTTPS automatico, blocco dopo 5 tentativi sbagliati.
 
-## Installazione (ti guido io passo passo)
-1. Supabase: nuovo progetto → SQL Editor → incolla `schema.sql` → Run → Authentication: crea il tuo utente e disattiva le registrazioni.
-2. App: carica tutto su GitHub, attiva Pages (Source: GitHub Actions) → apri il link → inserisci URL e anon key di Supabase → login.
-3. Telegram: my.telegram.org → API development tools → prendi api_id e api_hash.
-4. VPS: installa MT5 (login al conto demo, abilita "Algo Trading") e Python 3.12.
-5. Copia `engine` sulla VPS → `INSTALLA.bat` → compila `.env` → `LOGIN_TELEGRAM.bat` → `AVVIA.bat`. Per aggiornare: `AGGIORNA.bat`.
-
-## Test
-- `engine/tests/test_parser.py` — formati di segnale (13 test)
-- `engine/tests/test_sim.py` — simulazione completa con MT5 finto
+## Installazione sulla VPS (ti guido io)
+1. DuckDNS: crea il nome (es. signalbridge-dario) e mettici l'IP della VPS.
+2. Installa Python 3.12, MetaTrader 5 (login demo, Algo Trading attivo).
+3. Scarica il codice da GitHub, copia la cartella `engine` in `C:\SignalBridge`.
+4. `INSTALLA.bat` → compila `.env` (password app, dominio, Telegram, Gemini).
+5. `LOGIN_TELEGRAM.bat` → `AVVIA.bat`.
+6. Aggiornamenti futuri: `AGGIORNA.bat`.
